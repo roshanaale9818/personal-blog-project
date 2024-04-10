@@ -4,11 +4,11 @@ import { CreatePost } from "~/app/_components/create-post";
 
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
-import { Blog } from "~/types/Model";
+// import { Blog } from "~/types/Model";
 import Image from "next/image";
 import NewBlog from "./_components/create-blog";
-import { useRouter } from "next/navigation";
-import { GetServerSideProps } from "next";
+
+// import { GetServerSideProps } from "next";
 
 
 
@@ -81,11 +81,6 @@ async function CrudShowcase() {
 }
 
 async function BlogList() {
-  const router = useRouter();
-  const onNavigateHandler = async (blog:Blog) =>{
-    // await router.push(`/blog/${blog.id}`);
-    // getServerSideProps(blog.id)
-  };
   // const session = await getServerAuthSession();
   // if (!session?.user) return null;
   const blogs = await api.blog.getBlogs();
@@ -114,13 +109,11 @@ async function BlogList() {
 
               <div>
                 <p className="text-gray-700"> {blog.description} </p>
-                <button  onClick={()=>{
-                  // onNavigateHandler(blog)
-                }}
+                <Link href={`/blog/${blog.id}`}
                   className="mt-2 flex w-full justify-center rounded-md border border-transparent bg-pink-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Read More
-                </button>
+                </Link>
               </div>
             </div>
           ))}

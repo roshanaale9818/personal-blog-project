@@ -12,4 +12,6 @@ export interface Blog {
     author?:string;
     createdAt?: string;
     updatedAt?: string;
+    createdBy?:any;
+    createdById?:string;
 }

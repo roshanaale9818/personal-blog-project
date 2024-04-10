@@ -2,11 +2,17 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "~/trpc/react";
-const NewBlog = () => {
+const EditBlog = ({ blog }) => {
+  const {
+    title: _title,
+    content: _content,
+    description: _description,
+    id,
+  } = blog;
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(_title);
+  const [content, setContent] = useState(_content);
+  const [description, setDescription] = useState(_description);
   const router = useRouter();
 
   const toggleModal = () => {
@@ -19,28 +25,32 @@ const NewBlog = () => {
     setDescription("");
   };
 
-  const createBlog = api.blog.create.useMutation({
+  const updateBlog = api.blog.update.useMutation({
     onSuccess: () => {
-      alert("Blog Created Successfull");
+      alert("Blog Updated Successfull");
       router.refresh();
       resetForm();
     },
+    onError:(err)=>{
+      alert("Update failed.");
+      console.log(err)
+    }
   });
 
   return (
     <div className="flex items-center justify-center">
       <button
-        className="transform rounded-full bg-blue-500 px-4 py-2 font-bold text-white shadow-md transition duration-300 ease-in-out hover:scale-110"
+        className="transform bg-blue-500 px-4 py-2 font-bold text-white shadow-md transition duration-300 ease-in-out hover:scale-110"
         onClick={toggleModal}
       >
-        Add New Blog
+        Edit Blog
       </button>
       {isOpen && (
         <div className="fixed inset-0 z-10 flex items-center justify-center overflow-y-auto">
           <div className="z-9 absolute inset-0 bg-gray-500 opacity-75"></div>
           <div className="z-20 w-full max-w-md rounded-md bg-white p-8">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-black">Add New Blog</h2>
+              <h2 className="text-xl font-semibold text-black">Edit Blog</h2>
               <button
                 onClick={toggleModal}
                 className="text-gray-600 hover:text-gray-800 focus:outline-none"
@@ -63,7 +73,7 @@ const NewBlog = () => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                createBlog.mutate({ title, description, content });
+                updateBlog.mutate({ title, description, content, id });
               }}
             >
               <div className="mb-4">
@@ -130,9 +140,9 @@ const NewBlog = () => {
                 <button
                   type="submit"
                   className="rounded-md bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600 focus:outline-none"
-                  disabled={createBlog.isPending}
+                  disabled={updateBlog.isPending}
                 >
-                  {createBlog.isPending ? "Submitting..." : "Submit"}
+                  {updateBlog.isPending ? "Submitting..." : "Submit"}
                 </button>
               </div>
             </form>
@@ -143,4 +153,4 @@ const NewBlog = () => {
   );
 };
 
-export default NewBlog;
+export default EditBlog;
