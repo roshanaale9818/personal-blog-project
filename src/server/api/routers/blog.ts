@@ -64,6 +64,20 @@ export const blogRouter = createTRPCRouter({
             where: { createdBy: { id: ctx.session.user.id } },
         });
     }),
+
+    delete: protectedProcedure
+        .input(z.object({
+            id:z.number(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+       
+            const res = await ctx.db.blog.delete({
+                where:{
+                    id:Number(input.id)
+                }
+            });
+            return res;
+        }),
     getBlog: publicProcedure.input(z.object({
         id: z.string()
     }
