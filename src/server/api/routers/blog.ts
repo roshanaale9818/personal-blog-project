@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client/extension";
 import { z } from "zod";
 
 import {

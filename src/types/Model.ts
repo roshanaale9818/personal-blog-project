@@ -10,8 +10,8 @@ export interface Blog {
     description: string;
     content: string;
     author?:string;
-    createdAt?: string | Date;
-    updatedAt?: string | Date;
+    createdAt?:  Date;
+    updatedAt?:  Date;
     createdBy?:{ connect: { id: string} };
     createdById?:string;
 }
