@@ -2,17 +2,22 @@ import Image from "next/image";
 import EditBlog from "~/app/_components/update-blog";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
+import { Blog } from "~/types/Model";
 
 export default async function BlogDetail({
   params,
 }: {
   params: { id: string[] };
 }) {
+  console.log(params)
   const session = await getServerAuthSession();
 
   const [blogId] = params.id;
+  console.log(blogId)
   if (!blogId) return <div>Cannot find blogId</div>;
-  const blog = await api.blog.getBlog({ id: blogId });
+
+  if(!Number(blogId)) return <div>Invalid BlogId</div>
+  const blog = await api.blog.getBlog({ id: blogId }) as Blog;
   console.log("session", session,blog);
   let actionContent;
   if (session?.user.id === blog?.createdById) {

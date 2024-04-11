@@ -1,15 +1,19 @@
 "use client";
-import { Blog } from "@prisma/client";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "~/trpc/react";
-const EditBlog = ({ blog }) => {
+import { Blog } from "~/types/Model";
+interface UpdateProps {
+  blog: Blog
+}
+const EditBlog:React.FC<UpdateProps> = ({blog:_blog}) => {
   const {
     title: _title,
-    content: _content,
-    description: _description,
-    id,
-  } = blog;
+      content: _content,
+      description: _description,
+      id
+  } = _blog;
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(_title);
   const [content, setContent] = useState(_content);

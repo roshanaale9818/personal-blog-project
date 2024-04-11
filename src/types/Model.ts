@@ -5,13 +5,13 @@ export interface User {
     connect:{id:string}
 }
 export interface Blog {
-    id?: number | string;
+    id: number;
     title: string;
     description: string;
     content: string;
     author?:string;
-    createdAt?: string;
-    updatedAt?: string;
-    createdBy?:any;
+    createdAt?: string | Date;
+    updatedAt?: string | Date;
+    createdBy?:{ connect: { id: string} };
     createdById?:string;
 }

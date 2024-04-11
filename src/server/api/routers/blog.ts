@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client/extension";
 import { z } from "zod";
 
 import {
@@ -8,10 +9,19 @@ import {
 
 import { Blog } from '~/types/Model';
 
+
+
+// Define the type for the result of the getBlogs query
+type GetBlogsResult = Blog[];
 export const blogRouter = createTRPCRouter({
-    getBlogs: publicProcedure.query(async ({ ctx }) => {
+    // getBlogs: publicProcedure.query(async ({ ctx }) => {
+    //     // Fetch blogs from the database using Prisma
+    //     const blogs: Blog[] = await ctx.db.blog.findMany();
+    //     return blogs;
+    // }),
+    getBlogs: publicProcedure.query(async ({ ctx }): Promise<GetBlogsResult> => {
         // Fetch blogs from the database using Prisma
-        const blogs: Blog[] = await ctx.db.blog.findMany();
+        const blogs: GetBlogsResult = await ctx.db.blog.findMany();
         return blogs;
     }),
 
@@ -30,29 +40,37 @@ export const blogRouter = createTRPCRouter({
                 description: input.description,
                 content: input.content,
                 createdBy: { connect: { id: ctx.session.user.id } },
+                id: 0
             }
             const res = await ctx.db.blog.create({
-                data
+                data: {
+
+                    title: data.title,
+                    description: data.description,
+                    content: data.content,
+                    createdBy: { connect: { id: ctx.session.user.id } },
+                }
             });
             return res;
         }),
-        update: protectedProcedure
+    update: protectedProcedure
         .input(z.object({
-            id:z.number(),
+            id: z.number(),
             title: z.string(),
             description: z.string(),
             content: z.string(),
         }))
         .mutation(async ({ ctx, input }) => {
-            const data: Blog = {
+            const data = {
                 title: input.title,
                 description: input.description,
-                content: input.content
+                content: input.content,
+                id: Number(input.id)
             }
             const res = await ctx.db.blog.update({
                 data,
-                where:{
-                    id:Number(input.id)
+                where: {
+                    id: Number(input.id)
                 }
             });
             return res;
@@ -67,13 +85,13 @@ export const blogRouter = createTRPCRouter({
 
     delete: protectedProcedure
         .input(z.object({
-            id:z.number(),
+            id: z.number(),
         }))
         .mutation(async ({ ctx, input }) => {
-       
+
             const res = await ctx.db.blog.delete({
-                where:{
-                    id:Number(input.id)
+                where: {
+                    id: Number(input.id)
                 }
             });
             return res;
@@ -86,6 +104,9 @@ export const blogRouter = createTRPCRouter({
             where: { id: +input.id },
         });
     }),
+
+
+
 
     getSecretMessage: protectedProcedure.query(() => {
         return "you can now see this secret message!";
@@ -101,7 +122,9 @@ export const blogRouter = createTRPCRouter({
         if (!blog) { return "Blog cannot be found." };
         return ctx.db.post.findFirst({
             orderBy: { createdAt: "desc" },
-            where: { createdBy: { id: ctx.session.user.id } },
+            where: { createdBy: { id: ctx.session?.user.id } },
         });
     })
 });
+
+
