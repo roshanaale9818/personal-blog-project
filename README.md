@@ -27,3 +27,16 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+
+## How do I run this?
+1. First clone the repo
+2. Navigate to the project
+3. Run npm i
+4. Copy .env file
+5. npm run dev
+6. Your app should run on localhost:3000
+
+
+
+
